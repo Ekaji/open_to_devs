@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null
         }
-
+        
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email
@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: user.role,
           randomKey: "Welcome"
-        };
+        } as any; //https://github.com/nextauthjs/next-auth/issues/2701#issuecomment-1537189138
       },
     }),
   ],
