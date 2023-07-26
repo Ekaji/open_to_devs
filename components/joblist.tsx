@@ -14,7 +14,11 @@ const getJobPosts = cache(
   async () => {
      try{
        const res = await fetch("http://localhost:3000/api/auth/posts/fetch_all_jobs")
-       return res.json()
+
+       if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json()
    
      } catch (error) {
        console.log(error)
@@ -27,10 +31,11 @@ const getJobPosts = cache(
 export default function ListUsers() {
   let response = use<UpdatedJobPost>(getJobPosts());
 
-  const job_posts = response?.feedbacks || []
+  const job_posts = response?.feedbacks
 
-  console.log('feedbacks' , response?.feedbacks )
-
+  if(!job_posts) {
+    return <div>an error cccured</div>
+  }
 
   return (
     <div
