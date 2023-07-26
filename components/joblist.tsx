@@ -10,10 +10,12 @@ interface UpdatedJobPost extends JobPost {
   feedbacks: JobPost[]; // Replace 'any[]' with the actual type of the feedbacks property
 }
 
+const baseUrl = process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://open-to-devs.vercel.app'
+
 const getJobPosts = cache(
   async () => {
      try{
-       const res = await fetch("http://localhost:3000/api/auth/posts/fetch_all_jobs")
+       const res = await fetch(`${baseUrl}/api/auth/posts/fetch_all_jobs`)
 
        if (!res.ok) {
         throw new Error('Network response was not ok');
