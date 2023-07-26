@@ -1,0 +1,237 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider            = "mysql"
+  url                 = env("DATABASE_URL")
+  // shadowDatabaseUrl   = env("SHADOW_DATABASE_URL")
+  relationMode        = "prisma"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String @db.VarChar(1000)
+  email String @unique
+  hashedPassword String @db.Text
+  role ROLE @default(EMPLOYER)
+  status USER_STATUS @default(ACTIVE)
+  bio String @db.Text
+  logo String? @db.VarChar(1000)
+  website String? @db.VarChar(1000)
+  image String? @db.Text
+  job_seeker Job_Seeker[] //contains details of individuals looking for jobs
+  applied Applied[]
+  employer Employer[] //contains details of individuals looking to hire
+  articles Articles[]
+}
+
+enum USER_STATUS {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum ROLE { 
+  ADMIN
+  MODERATOR
+  EMPLOYER
+  JOBSEEKER
+}
+
+model Articles {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String
+  content_md Bytes
+  category ARTICLE_TYPE
+  status STATUS
+  comments COMMENTS[]
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+enum ARTICLE_TYPE {
+  BLOG
+  ARTICLE
+}
+
+
+model Job_Seeker {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  avalability String @db.Text
+  applications Applications[]
+  intrests Json
+  skills Json
+  aditional_info String @db.Text
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+// TODO CREATE A COMPANY/EMPLOYER MODEL AND LINK WITH COMPANY DETAILS
+model Employer {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company_name String @db.Text
+  description String @db.Text
+  aditional_info String @db.Text
+  website String? @db.VarChar(1000)
+  logo String? @db.Text
+  industry String? @db.VarChar(1000)
+  founded Int? 
+  headquarters String? @db.Text
+  size Int?
+  mission String? @db.Text
+  values String? @db.Text
+  culture String? @db.Text
+  awards String? @db.Text
+
+  jobposts JobPost[]
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+model Applications {
+  id Int @id @default(autoincrement())
+  applications_title String @db.VarChar(1000)
+  mimeType String
+  file_data Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userID Int
+  user Job_Seeker @relation(fields: [userID], references: [id])
+  applied Applied[]
+
+  @@index([userID])
+}
+
+model Applied {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  applicationID Int
+  application Applications @relation(fields: [applicationID], references: [id])
+
+  appliedJobID Int
+  appliedJob JobPost @relation(fields: [appliedJobID], references: [id])
+
+  @@index([userID])
+  @@index([appliedJobID])
+  @@index([applicationID])
+}
+
+model JobPost {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String @db.Text
+  description String @db.Text
+  deadline DateTime
+  link String @db.Text
+  source String? @db.VarChar(1000)
+  level LEVEL @default(JUNIOR)
+  experience String @db.Text
+  duration String?
+  job_post_status STATUS @default(DRAFT)
+  location Json
+  workLocation WORK_LOCATION @default(ONSITE)
+  skill_requirements Json
+  employmentType EMPLOYMENT_TYPE @default(FULLTIME)
+  niceToHave Json
+  responsibilities Json
+  benefits Json
+  salaryRange SalaryRange[]
+  tags Json
+
+  applied Applied[]
+
+  employerID Int
+  employer Employer @relation(fields: [employerID], references: [id])
+
+  @@index([employerID])
+}
+
+enum LEVEL {
+  INTERNSHIP
+  INTERMIDIATE
+  JUNIOR
+  MIDLEVEL
+  SENIOR
+}
+
+enum WORK_LOCATION {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+enum EMPLOYMENT_TYPE {
+  FULLTIME
+  PARTTIME
+  CONTRACT
+}
+
+enum STATUS {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  DELETED
+}
+
+model SalaryRange {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  from Decimal
+  to Decimal?
+  currency String
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+// model Responsibilities {
+//   id Int @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   responsibilities String @db.Text
+//   jobPostID Int
+//   jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+//   @@index([jobPostID])
+// }
+
+model COMMENTS {
+  id Int @id @default(autoincrement())
+  comment String
+  articleID Int
+  article Articles @relation(fields: [articleID], references: [id])
+  parentID Int?
+  parent    COMMENTS? @relation("ChildComments", fields: [parentID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childComments COMMENTS[] @relation("ChildComments")
+
+  @@index([parentID])
+  @@index([articleID])
+}

@@ -1,0 +1,64 @@
+"use client";
+
+import { JobPost } from "@prisma/client";
+import React, { cache, use, useState, useEffect } from "react";
+
+interface UpdatedJobPost extends JobPost {
+  // ok: any;
+  results: number
+  status: string
+  feedbacks: JobPost[]; // Replace 'any[]' with the actual type of the feedbacks property
+}
+
+const getJobPosts = cache(
+  async () => {
+     try{
+       const res = await fetch("http://localhost:3000/api/auth/posts/fetch_all_jobs")
+       return res.json()
+   
+     } catch (error) {
+       console.log(error)
+     }
+     
+   }
+) 
+
+
+export default function ListUsers() {
+  let response = use<UpdatedJobPost>(getJobPosts());
+
+  const job_posts = response?.feedbacks || []
+
+  console.log('feedbacks' , response?.feedbacks )
+
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr 1fr",
+        gap: 20,
+      }}
+    >
+     
+     {
+       response ? (
+           job_posts.map((job: any) => (
+        <div
+          key={job.id}
+          style={{ border: "1px solid #ccc", textAlign: "center" }}
+        >
+          <img
+            src={`https://robohash.org/${job.id}?set=set2&size=180x180`}
+            alt={job.title}
+            style={{ height: 180, width: 180 }}
+          />
+          <h3>{job.title}</h3>
+        </div>
+      ))
+      ) : (<>An error Occured</>)
+     }
+     
+    </div>
+  );
+}

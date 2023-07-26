@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider            = "mysql"
+  url                 = env("DATABASE_URL")
+  // shadowDatabaseUrl   = env("SHADOW_DATABASE_URL")
+  relationMode        = "prisma"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String @db.VarChar(1000)
+  email String @unique
+  hashedPassword String @db.Text
+  description String @db.Text
+  logo String? @db.VarChar(1000)
+  website String? @db.VarChar(1000)
+  image String? @db.Text
+  applications Applications[]
+  intrests UserIntrests[]
+  skills UserSkills[]
+  appliedTo JobPost[]
+}
+
+// TODO CREATE A COMPANY/EMPLOYER MODEL AND LINK WITH COMPANY DETAILS
+model Employer {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String @db.VarChar(1000)
+  email String @unique
+  hashedPassword String @db.Text
+  role ROLE @default(EMPLOYER)
+  description String @db.Text
+  logo String? @db.Text
+  website String? @db.Text
+  image String? @db.Text
+  companyDetails CompanyDetails[]
+  jobposts JobPost[]
+}
+
+model Applications {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(1000)
+  mimeType String
+  data Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+  appliedJobID Int
+  appliedJob JobPost @relation(fields: [appliedJobID], references: [id])
+
+  @@index([userID])
+  @@index([appliedJobID])
+}
+
+enum ROLE { 
+  ADMIN
+  MODERATOR
+  EMPLOYER
+}
+
+model UserIntrests {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  intrest String @db.Text
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+model UserSkills {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+  skill String @db.Text
+
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+model JobPost {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String @db.Text
+  description String @db.Text
+  deadline DateTime
+  link String @db.Text
+  source String? @db.VarChar(1000)
+  // companyDetails CompanyDetails[]
+  location Location[]
+  workLocation WORK_LOCATION @default(ONSITE)
+  skill_requirements SkillRequirements[]
+  employmentType EMPLOYMENT_TYPE @default(FULLTIME)
+  niceToHave NiceToHave[]
+  responsibilities Responsibilities[]
+  benefits Benefits[]
+  salaryRange SalaryRange[]
+  tags Tags[]
+  ReceivedApplication Applications[]
+
+  employerID Int
+  employer Employer @relation(fields: [employerID], references: [id])
+  userID Int
+  user User @relation(fields: [userID], references: [id])
+
+  @@index([employerID])
+  @@index([userID])
+}
+
+model Tags {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tag String @db.VarChar(1000)
+
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+model Location {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  city String?
+  state String?
+  country String?
+  address String? @db.Text
+  timeZone String?
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+model CompanyDetails {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String @db.VarChar(1000)
+  description String @db.Text
+  website String? @db.VarChar(1000)
+  logo String? @db.Text
+  industry String? @db.VarChar(1000)
+  founded Int? 
+  headquarters String? @db.Text
+  size Int?
+  mission String? @db.Text
+  values String? @db.Text
+  culture String? @db.Text
+  awards String? @db.Text
+  employerID Int
+  employer Employer @relation(fields: [employerID], references: [id])
+
+  @@index([employerID])
+}
+
+model SalaryRange {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  from Decimal
+  to Decimal?
+  currency String
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+model Benefits {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  benefits String @db.Text
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+model Responsibilities {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  responsibilities String @db.Text
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+model NiceToHave {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  niceToHave String @db.Text
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
+
+enum EMPLOYMENT_TYPE {
+  FULLTIME
+  PARTTIME
+  CONTRACT
+}
+
+enum WORK_LOCATION {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+model SkillRequirements {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  requirement String @db.Text
+  jobPostID Int
+  jobPost JobPost @relation(fields: [jobPostID], references: [id])
+
+  @@index([jobPostID])
+}
