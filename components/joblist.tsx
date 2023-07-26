@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { JobPost } from "@prisma/client";
 import React, { cache, use, useState, useEffect } from "react";
@@ -21,14 +21,14 @@ const getJobPosts = cache(
       return res.json()
    
      } catch (error) {
-       console.log(error)
+       console.error(error)
      }
      
    }
 ) 
 
 
-export default function ListUsers() {
+export default function JobList() {
   let response = use<UpdatedJobPost>(getJobPosts());
 
   const job_posts = response?.feedbacks
