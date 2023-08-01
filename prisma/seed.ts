@@ -14,6 +14,7 @@ async function main() {
         logo: "https://example.com/logo.png",
         website: "https://example.com",
         image: "https://example.com/image.png",
+        phone: "+23412345678"
     }
   })
 }

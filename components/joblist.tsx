@@ -1,13 +1,13 @@
 // "use client";
 
 import { JobPost } from "@prisma/client";
-import React, { cache, use, useState, useEffect } from "react";
+import React, { cache, use } from "react";
 
 interface UpdatedJobPost extends JobPost {
   // ok: any;
   results: number
   status: string
-  feedbacks: JobPost[]; // Replace 'any[]' with the actual type of the feedbacks property
+  feedbacks: JobPost[];
 }
 
 const baseUrl = process.env.NODE_ENV === "development" ? 'http://localhost:3000' : 'https://open-to-devs.vercel.app'

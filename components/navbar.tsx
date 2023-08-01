@@ -5,11 +5,12 @@ import { LoginButton, RegisterButton, LogoutButton } from './buttons.components'
 import Dropdown  from './dropdown';
 import { useSession } from "next-auth/react";
 import Profile from './profile';
+import { Session } from '@/types/session';
 
 
 export default function  Navbar() {
 
-  const { data: session } = useSession();
+  const { data: session } : any = useSession();
 
   return (
 <section className="flex flex-wrap sm:justify-start -z-50 sm:flex-nowrap w-full bg-white text-sm py-4 dark:bg-gray-800">
@@ -35,7 +36,9 @@ export default function  Navbar() {
           }
         </pre>
         <span className='relative'>
-          <Dropdown  />
+          {
+            session?.user?.role !== "EMPLOYER" ? <Dropdown  /> : <RegisterButton text='dashboard' link='/dashboard' />
+          }
         </span>
         {
             session?.user ? <Profile  /> : null

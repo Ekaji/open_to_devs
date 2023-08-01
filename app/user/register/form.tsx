@@ -1,46 +1,46 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { ChangeEvent, useState } from "react";
+// import { useSession } from "next-auth/react";
 
-export const UserRegisterForm = () => {
-  let [loading, setLoading] = useState(false);
-  let [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+export const UserRegisterForm = async () => {
+  
+  // const { data: session } = useSession();
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: any) => {
     e.preventDefault();
-    setLoading(true);
+
+    const data = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
+    }
 
     try {
       const res = await fetch("/api/register/user", {
         method: "POST",
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      setLoading(false);
+      // const response= await res.json()
+
+      // setLoading(false);
       if (!res.ok) {
         alert((await res.json()).message);
         return;
       }
 
-      signIn(undefined, { callbackUrl: "/" });
+      signIn(undefined, { callbackUrl: `/profile` });
+      
+
     } catch (error: any) {
-      setLoading(false);
+      // setLoading(false);
       console.error(error);
       alert(error.message);
     }
-  };
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
   };
 
   return (
@@ -58,8 +58,9 @@ export const UserRegisterForm = () => {
         required
         type="text"
         name="name"
-        value={formValues.name}
-        onChange={handleChange}
+        id="name"
+        // value={formValues.name}
+        // onChange={handleChange}
         style={{ padding: "1rem" }}
       />
       <label htmlFor="email">Email</label>
@@ -67,8 +68,9 @@ export const UserRegisterForm = () => {
         required
         type="email"
         name="email"
-        value={formValues.email}
-        onChange={handleChange}
+        id="email"
+        // value={formValues.email}
+        // onChange={handleChange}
         style={{ padding: "1rem" }}
       />
       <label htmlFor="password">Password</label>
@@ -76,20 +78,26 @@ export const UserRegisterForm = () => {
         required
         type="password"
         name="password"
-        value={formValues.password}
-        onChange={handleChange}
+        id="password"
+        // value={formValues.password}
+        // onChange={handleChange}
         style={{ padding: "1rem" }}
       />
       <button
         style={{
-          backgroundColor: `${loading ? "#ccc" : "#3446eb"}`,
+          backgroundColor: "#3446eb",
+          //  `${loading ? "#ccc" : 
+          //  "#3446eb"}`,
           color: "#fff",
           padding: "1rem",
           cursor: "pointer",
         }}
-        disabled={loading}
+        // disabled={loading}
+        type="submit"
       >
-        {loading ? "loading..." : "Register"}
+        {
+        // loading ? "loading..." :
+         "Register"}
       </button>
     </form>
   );

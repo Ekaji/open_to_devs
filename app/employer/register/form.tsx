@@ -30,7 +30,7 @@ export const EmployerRegisterationForm = () => {
         return;
       }
 
-      signIn(undefined, { callbackUrl: "/" });
+      signIn(undefined, { callbackUrl: "/profile" });
     } catch (error: any) {
       setLoading(false);
       console.error(error);

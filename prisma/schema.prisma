@@ -17,6 +17,8 @@ model User {
   updatedAt DateTime @updatedAt
   name String @db.VarChar(1000)
   email String @unique
+  phone String? @unique
+  address String?
   hashedPassword String @db.Text
   role ROLE @default(EMPLOYER)
   status USER_STATUS @default(ACTIVE)
@@ -74,12 +76,14 @@ model Job_Seeker {
   intrests Json
   skills Json
   aditional_info String @db.Text
+  experience_level LEVEL @default(JUNIOR)
 
   userID Int
   user User @relation(fields: [userID], references: [id])
 
   @@index([userID])
 }
+
 
 // TODO CREATE A COMPANY/EMPLOYER MODEL AND LINK WITH COMPANY DETAILS
 model Employer {

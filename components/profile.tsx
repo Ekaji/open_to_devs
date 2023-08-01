@@ -1,16 +1,7 @@
 import React from 'react'
 import { ProfileButton } from './buttons.components'
 import { useSession } from 'next-auth/react';
-
-interface Session {
-  user?: {
-    name?: string | null | undefined;
-    email?: string | null | undefined;
-    image?: string | null | undefined;
-    role?: string | null | undefined;
-    id?: string | null | undefined;
-  } | null | undefined;
-} 
+// import { Session } from '@/types/session';
 
 export default function Profile() {
   const { data: session }: any = useSession(); //fix any
