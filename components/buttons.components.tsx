@@ -27,7 +27,7 @@ export const RegisterButton = ({text, link, role }: RegisterOptions ) => {
 
 export const LogoutButton = () => {
   return (
-    <button style={{marginRight: 10}} onClick={() => signOut()}>
+    <button style={{marginRight: 10}} onClick={() => signOut( { callbackUrl: `/` })}>
       Sign Out
     </button>
   )
@@ -36,7 +36,7 @@ export const LogoutButton = () => {
 export const ProfileButton = ({ children, role, id }: any) => {
 
   return (
-  <Link href={ role !== null || "USER" ? `/profile/${id}` : `/profile/${id}`}>
+  <Link href={ role !== null || "USER" ? `/profile` : `/profile`}> 
     {children}
   </Link>
   )

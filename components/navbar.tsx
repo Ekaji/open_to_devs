@@ -37,8 +37,12 @@ export default function  Navbar() {
         </pre>
         <span className='relative'>
           {
-            session?.user?.role !== "EMPLOYER" ? <Dropdown  /> : <RegisterButton text='dashboard' link='/dashboard' />
+          (session?.user?.role === "EMPLOYER" || session?.user?.role === "ADMIN") ?  
+          (<RegisterButton text='dashboard' link='/dashboard' />) :
+          (session?.user?.role === "JOBSEEKER") ?  null :
+          (<Dropdown  /> )
           }
+
         </span>
         {
             session?.user ? <Profile  /> : null

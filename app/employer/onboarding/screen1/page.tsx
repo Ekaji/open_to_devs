@@ -38,8 +38,6 @@ export default function page() {
         throw new Error("Failed to create job post.");
       }
 
-      console.log(response)
-
     } catch (error) {
         console.error(error)
     }

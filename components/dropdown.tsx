@@ -21,12 +21,12 @@ const Dropdown: React.FC = () => {
               <li
                 className="py-2  px-4 cursor-pointer hover:bg-blue-100"
               >
-                <RegisterButton text={'Register'} link={'/auth/user/register'} />
+                <RegisterButton text={'Applicant'} link={'/user/register'} />
               </li>
               <li
                 className="py-2  px-4 cursor-pointer hover:bg-blue-100"
               >
-                <RegisterButton text={'Employer Registeration'} link={'/auth/employer/register'} />
+                <RegisterButton text={'Employer'} link={'/auth/employer/register'} />
               </li>
             {/* ))} */}
           </ul>

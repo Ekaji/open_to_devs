@@ -177,6 +177,7 @@ model JobPost {
 }
 
 enum LEVEL {
+  ENTRY
   INTERNSHIP
   INTERMIDIATE
   JUNIOR

@@ -33,7 +33,7 @@ export const UserRegisterForm = async () => {
         return;
       }
 
-      signIn(undefined, { callbackUrl: `/profile` });
+      signIn(undefined, { callbackUrl: `/user/onboarding/screen1` });
       
 
     } catch (error: any) {
