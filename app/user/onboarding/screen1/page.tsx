@@ -87,15 +87,20 @@ export default function page() {
       const handleSubmit = async (e: any) => {
         e.preventDefault();
         
-        const removeIDs = (data: any[]) => {
+        const prepareDataForSubmission = (data: any[]) => {
           return data.map((items) => {
             const {ID, ...otherValues} = items
-            return { ...otherValues, userID: id }
+            return { 
+              ...otherValues,
+              // userID: id,
+              from: new Date(otherValues.from).toISOString(),
+              to: new Date(otherValues.to).toISOString()
+            }
           });
         }
 
-      const educationDataWithoutIDs = removeIDs(educationData)
-      const experienceDataWithoutIds = removeIDs(experienceData)
+      const educationDataWithoutIDs = prepareDataForSubmission(educationData)
+      const experienceDataWithoutIds = prepareDataForSubmission(experienceData)
   
       const data = {
         id,
@@ -244,13 +249,13 @@ export default function page() {
             <span className='w-2/4 flex flex-col'>
               <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
                 start date
-                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_education_change(e, data.ID) }  value={data.from} type="text" id="from" name="from" />
+                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_education_change(e, data.ID) }  value={data.from} type="date" id="from" name="from" />
               </label>
             </span>
             <span className='w-2/4 flex flex-col'>
               <label>
                 date of completion
-                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_education_change(e, data.ID) }  value={data.to} type="text" id="to" name="to" />
+                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_education_change(e, data.ID) }  value={data.to} type="date" id="to" name="to" />
               </label>
             </span>
           </span>
@@ -297,13 +302,13 @@ export default function page() {
             <span className='w-2/4 flex flex-col'>
               <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
                 start date
-                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_experience_change(e, data.ID) }  value={data.from} type="text" id="from" name="from" />
+                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_experience_change(e, data.ID) }  value={data.from} type="date" id="from" name="from" />
               </label>
             </span>
             <span className='w-2/4 flex flex-col'>
               <label>
                 date of completion
-                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_experience_change(e, data.ID) }  value={data.to} type="text" id="to" name="to" />
+                <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={ (e) =>handle_experience_change(e, data.ID) }  value={data.to} type="date" id="to" name="to" />
               </label>
             </span>
           </span>

@@ -1,25 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { json } from "stream/consumers";
 
 export async function POST(req: NextRequest) {
 
   const {
       id,
       bio,
-      website,
       image,
-      designation,
-      address,
-
-      intrests,
-      avalability,
       skills,
-      aditional_info,
-      experience_level,
-
+      website,
+      address,
+      intrests,
+      education,
       experience,
-      education
+      designation,
+      avalability,
+      aditional_info,
+      experience_level
      } = await req.json()
 
      const updateUser = await prisma.user.update({
@@ -28,29 +25,27 @@ export async function POST(req: NextRequest) {
       },
       data: {
         bio,
-        website,
         image,
+        website,
+        address,
         designation,
-        address
-      }
-    });
-
-    const createJob_seeker = await prisma.job_Seeker.create({
-      data: {
-        userID: id,
-        intrests,
-        avalability,
-        skills,
-        aditional_info,
-        experience_level,
-        experience: {
-          createMany: {
-            data: experience
-          },
-        },
-        education: {
-          createMany: {
-            data: education
+        job_seeker: {
+          create: {
+            skills,
+            intrests,
+            avalability,
+            aditional_info,
+            experience_level,
+            experience: {
+              createMany: {
+                data: experience
+              },
+            },
+            education: {
+              createMany: { 
+                data: education
+              }
+            }
           }
         }
       }
@@ -59,7 +54,7 @@ export async function POST(req: NextRequest) {
 
   let json_response = {
     status: "success",
-    feedbacks: { ...updateUser, ...createJob_seeker },
+    feedbacks: { ...updateUser },
   };
   return NextResponse.json(json_response);
 }
