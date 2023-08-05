@@ -11,7 +11,9 @@ export const UserRegisterForm = async () => {
     e.preventDefault();
 
     const data = {
-      name: e.target.name.value,
+      firstName: e.target.firstname.value,
+      lastName: e.target.lastname.value,
+      phone: e.target.phone.value,
       email: e.target.email.value,
       password: e.target.password.value,
     }
@@ -25,9 +27,6 @@ export const UserRegisterForm = async () => {
         },
       });
 
-      // const response= await res.json()
-
-      // setLoading(false);
       if (!res.ok) {
         alert((await res.json()).message);
         return;
@@ -53,14 +52,20 @@ export const UserRegisterForm = async () => {
         rowGap: 10,
       }}
     >
-      <label htmlFor="name">Name</label>
+      <label htmlFor="firstName">firstname</label>
       <input
         required
         type="text"
-        name="name"
-        id="name"
-        // value={formValues.name}
-        // onChange={handleChange}
+        name="firstname"
+        id="firstname"
+        style={{ padding: "1rem" }}
+      />
+      <label htmlFor="lastName">lastname</label>
+      <input
+        required
+        type="text"
+        name="lastname"
+        id="lastname"
         style={{ padding: "1rem" }}
       />
       <label htmlFor="email">Email</label>
@@ -69,8 +74,14 @@ export const UserRegisterForm = async () => {
         type="email"
         name="email"
         id="email"
-        // value={formValues.email}
-        // onChange={handleChange}
+        style={{ padding: "1rem" }}
+      />
+      <label htmlFor="phone">phone number</label>
+      <input
+        required
+        type="phone"
+        name="phone"
+        id="phone"
         style={{ padding: "1rem" }}
       />
       <label htmlFor="password">Password</label>

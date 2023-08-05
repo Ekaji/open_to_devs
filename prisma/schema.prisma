@@ -15,10 +15,14 @@ model User {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name String @db.VarChar(1000)
+  firstName String @db.VarChar(1000)
+  lastName String @db.VarChar(1000)
+  designation String?
   email String @unique
   phone String? @unique
   address String?
+  dateOfBirth DateTime?
+  gender GENDER
   hashedPassword String @db.Text
   role ROLE @default(EMPLOYER)
   status USER_STATUS @default(ACTIVE)
@@ -30,6 +34,12 @@ model User {
   applied Applied[]
   employer Employer[] //contains details of individuals looking to hire
   articles Articles[]
+}
+
+enum  GENDER {
+  MALE
+  FEMALE
+  PREFERE_NOT_TO_DISCLOSE
 }
 
 enum USER_STATUS {
@@ -66,13 +76,14 @@ enum ARTICLE_TYPE {
   ARTICLE
 }
 
-
 model Job_Seeker {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   avalability String @db.Text
   applications Applications[]
+  experience experience[]
+  education education[]
   intrests Json
   skills Json
   aditional_info String @db.Text
@@ -84,6 +95,40 @@ model Job_Seeker {
   @@index([userID])
 }
 
+model experience {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name_of_employer String
+  from DateTime
+  to DateTime
+  i_currently_work_here I_WORK_HERE
+
+  userID Int
+  user Job_Seeker @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+model education {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name_of_institution String
+  degree_type String
+  from DateTime
+  to DateTime
+
+  userID Int
+  user Job_Seeker @relation(fields: [userID], references: [id])
+
+  @@index([userID])
+}
+
+enum I_WORK_HERE {
+  TRUE
+  FALSE
+}
 
 // TODO CREATE A COMPANY/EMPLOYER MODEL AND LINK WITH COMPANY DETAILS
 model Employer {
