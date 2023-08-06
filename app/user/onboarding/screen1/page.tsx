@@ -1,5 +1,5 @@
 "use client"
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 
@@ -62,7 +62,6 @@ export default function page() {
           ];
         case 'HANDLE_CHANGE':
           return state.map((item: { ID: string; }) => {
-            console.log(item.ID , action.payload.ID)
             if (item.ID === action.payload.ID) {
               return { ...item, [action.payload.name]: action.payload.value }
             }
@@ -83,16 +82,59 @@ export default function page() {
         educaionDispatch({type: 'ADD_EDUCATION_INPUT', payload: { ID: id }})
       }
 
+      async function processDataFromFile(myfile: File): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
       
+          fileReader.onload = () => {
+            const fileData = fileReader.result as string;
+            const base64Data = fileData.split(',')[1];
+      
+            // Prepare the data to be sent to the backend
+            const data = [
+              {
+                applications_title: myfile.name,
+                mimeType: myfile.type,
+                file_data: base64Data,
+              },
+            ];
+      
+            resolve(data);
+          };
+      
+          fileReader.onerror = (error) => {
+            reject(error);
+          };
+      
+          fileReader.readAsDataURL(myfile);
+        });
+      }
+
       const handleSubmit = async (e: any) => {
         e.preventDefault();
+
+        // filehandler
+        async function fileData(): Promise<any[]> {
+          const myfile = e.target.cv.files?.[0];
+          if (!myfile) {
+            return []; // Return an empty array or handle the error appropriately
+          }
         
+          try {
+            const data = await processDataFromFile(myfile);
+            console.log('Processed data:', data);
+            return data;
+          } catch (error) {
+            console.error('Error processing file:', error);
+            throw error; // Rethrow the error or handle it appropriately
+          }
+        }
+
         const prepareDataForSubmission = (data: any[]) => {
           return data.map((items) => {
             const {ID, ...otherValues} = items
             return { 
               ...otherValues,
-              // userID: id,
               from: new Date(otherValues.from).toISOString(),
               to: new Date(otherValues.to).toISOString()
             }
@@ -102,6 +144,9 @@ export default function page() {
       const educationDataWithoutIDs = prepareDataForSubmission(educationData)
       const experienceDataWithoutIds = prepareDataForSubmission(experienceData)
   
+      const [{ applications_title, file_data, mimeType }] = await fileData();
+      const applications = [{ applications_title, file_data, mimeType }];
+
       const data = {
         id,
         bio: e.target.bio.value,
@@ -118,7 +163,9 @@ export default function page() {
 
         experience: experienceDataWithoutIds,
         education: educationDataWithoutIDs,
+        applications
       }
+
   
       try {
   
@@ -131,7 +178,7 @@ export default function page() {
         if (!response.ok) {
           throw new Error("Failed to create job post.");
         } else {
-          router.push('/user/onboarding/screen2')
+          router.push('/profile')
         }
       } catch (error) {
           console.error(error)
@@ -142,7 +189,6 @@ export default function page() {
     const handle_education_change = (e: any, ID: string) => {
       e.preventDefault()
       educaionDispatch({type: 'HANDLE_CHANGE', payload: { ID, name: e.target.name, value: e.target.value} })
-      console.log('HANDLE_CHANGE', ID, {name: e.target.name, value: e.target.value} )
     }
 
     const handle_experience_change = (e: any, ID: string) => {
@@ -180,6 +226,14 @@ export default function page() {
       <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="file" id="image" name="image" accept="image/*" />
     </label>
     <br />
+
+    <label>
+      CV:
+      <input
+      //  onChange={handleFileInputChange} 
+       className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="file" id="cv" name="cv" accept=".pdf, .doc, .docx" />
+    </label>
+
     <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
       Interests:
       <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" id="interests" name="interests" />
@@ -323,3 +377,4 @@ export default function page() {
     </div>
   )
 }
+

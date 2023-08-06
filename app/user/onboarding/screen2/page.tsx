@@ -72,6 +72,10 @@ export default function page() {
       Image:
       <input type="file" id="image" name="image" accept="image/*" />
     </label>
+    <label>
+      CV:
+      <input type="file" id="cv" name="cv" accept=".pdf, .doc, .docx" />
+    </label>
     <br />
     <label>
       Interests:

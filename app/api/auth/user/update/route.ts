@@ -15,8 +15,9 @@ export async function POST(req: NextRequest) {
       experience,
       designation,
       avalability,
+      applications,
       aditional_info,
-      experience_level
+      experience_level,
      } = await req.json()
 
      const updateUser = await prisma.user.update({
@@ -44,6 +45,11 @@ export async function POST(req: NextRequest) {
             education: {
               createMany: { 
                 data: education
+              }
+            },
+            applications: {
+              createMany: {
+                data: applications
               }
             }
           }
