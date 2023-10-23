@@ -12,7 +12,11 @@ export async function GET(request: NextRequest) {
   const feedbacks = await prisma.jobPost.findMany({
     skip,
     take: limit,
+    include: {
+      employer: true
+    }
   });
+  // const feedbacks = await prisma.jobPost.findMany();
 
   let json_response = {
     status: "success",

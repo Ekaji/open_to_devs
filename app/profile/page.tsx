@@ -8,7 +8,7 @@ type Role = string | null;
 type id = number | null;
 
 async function getApplicant(applicantID: number | string, url: string, method: string ){
-  const data = { applicantID }
+//   const data = { applicantID }
   try{
     const res = await fetch(`${baseUrl}/${url}`, {
       method,
@@ -19,7 +19,7 @@ async function getApplicant(applicantID: number | string, url: string, method: s
     if(!res.ok){
       throw new Error('unable to fetch')
     }
-  
+
     return await res.json()
 
   }catch(error){
@@ -28,16 +28,19 @@ async function getApplicant(applicantID: number | string, url: string, method: s
 }
 
 export default async function Page() {
-  
+
   const session: SessionWithRole | null = await getServerSession(authOptions) || null;
   const role: Role = session?.user?.role ?? null;
   const id: id = session?.user?.id ?? null;
 
 
-  const response = await getApplicant(id, 'api/auth/user', "POST")
-  const applicantCredentials = await getApplicant(id, '/api/auth/user/getCredentials', "POST")
+  const response = role === 'JOBSEEKER' ?
+   await getApplicant(id, 'api/auth/user/READ', "POST") :
+   role === 'MODERATOR' || 'ADMIN' || 'EMPLOYER' ?
+   await getApplicant(id, 'api/auth/employer/READ', "POST") :
+   await getApplicant(id, 'api/auth/user/READ', "POST")
 
-  console.log({applicantCredentials})
+console.log({response})
 
   return (
     <>
@@ -55,7 +58,7 @@ export default async function Page() {
                     <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">{response?.feedbacks?.bio}</p>
                 </div>
                 <div className="my-4"></div>
-         
+
             </div>
             <div className="w-full md:w-9/12 mx-2 h-64">
                 <div className="bg-white p-3 shadow-sm rounded-sm">
@@ -67,7 +70,7 @@ export default async function Page() {
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </span>
-                        <span className="tracking-wide">About</span>
+                        <span className="tracking-wide">Aboutx</span>
                     </div>
                     <div className="text-gray-700">
                         <div className="grid md:grid-cols-2 text-sm">
@@ -116,8 +119,8 @@ export default async function Page() {
 
                 <div className="bg-white p-3 shadow-sm rounded-sm">
 {/*  */}
-          { 
-          response?.feedbacks?.role === "USER" &&    
+          {
+          response?.feedbacks?.role === "USER" &&
               (<div className="grid grid-cols-2">
                         <div>
                             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
@@ -179,7 +182,7 @@ export default async function Page() {
                   }
                   {/* "EMPLOYER" */}
                   {
-                    (response?.feedbacks?.role === "EMPLOYER" || 
+                    (response?.feedbacks?.role === "EMPLOYER" ||
                       response?.feedbacks?.role === "ADMIN" ) &&
                     (
                       <div className="grid grid-cols-2">

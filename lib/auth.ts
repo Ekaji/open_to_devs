@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
+          name: user.firstName,
           role: user.role,
           randomKey: "Welcome"
         } as any; //https://github.com/nextauthjs/next-auth/issues/2701#issuecomment-1537189138

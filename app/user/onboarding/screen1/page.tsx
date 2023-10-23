@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 import React, { useReducer, useState } from 'react'
 import { useSession } from "next-auth/react";
@@ -32,9 +33,7 @@ export default function page() {
 
     
     const [educationData, educaionDispatch] = useReducer(reducer, initialEducationState)
-
     const [experienceData, experienceDispatch] = useReducer(reducer, initialExperienceData)
-
 
     function reducer (state: any, action: { payload?: { ID?: string, name?: any; value?: any; }; type: string; }) {
       switch (action.type) {
@@ -169,7 +168,7 @@ export default function page() {
   
       try {
   
-        const response = await fetch("/api/auth/user/update", {
+        const response = await fetch("/api/auth/user/UPDATE", {
           method: "POST",
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }
@@ -283,7 +282,7 @@ export default function page() {
            from: string;
            to: string;
           }) => (
-          <div className=''>
+          <div key={data.ID} className=''>
           <span className='w-full flex space-x-5 mb-5'>
             <span className='w-2/4 flex flex-col'>
               <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
@@ -331,7 +330,7 @@ export default function page() {
            to: string;
            i_currently_work_here: string
           }) => (
-          <div className=''>
+          <div key={data.ID} className=''>
           <span className='w-full flex space-x-5 mb-5'>
             <span className='w-2/4 flex flex-col'>
               <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>

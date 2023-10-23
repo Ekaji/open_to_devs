@@ -19,7 +19,7 @@ export const UserRegisterForm = async () => {
     }
 
     try {
-      const res = await fetch("/api/register/user", {
+      const res = await fetch("/api/register/user/CREATE", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {

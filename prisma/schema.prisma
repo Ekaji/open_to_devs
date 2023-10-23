@@ -48,7 +48,7 @@ enum USER_STATUS {
   DELETED
 }
 
-enum ROLE { 
+enum ROLE {
   ADMIN
   MODERATOR
   EMPLOYER
@@ -138,10 +138,10 @@ model Employer {
   company_name String @db.Text
   description String @db.Text
   aditional_info String @db.Text
-  website String? @db.VarChar(1000)
+  website String? @db.VarChar(1000) //change this to company website
   logo String? @db.Text
   industry String? @db.VarChar(1000)
-  founded Int? 
+  founded DateTime? //should be date time
   headquarters String? @db.Text
   size Int?
   mission String? @db.Text

@@ -1,4 +1,5 @@
 "use client"
+import { useState } from "react";
 
 interface RegisterOptions {
   text: string;
@@ -16,6 +17,25 @@ export const LoginButton = () => {
     </button>
   )
 }
+
+export const RoundLoginButton = () => {
+  return (
+    <button onClick={() => signIn()}
+      className='border bg-[#FF9B9B] border-black rounded-full w-48 my-2 mr-2 py-3'>Sign In</button>
+  )
+}
+
+export const RegularButton = ({text, type, state, setState}: { text: any;
+  type?: any;
+  state?: any;
+  setState?: any;} ) => {
+  return (
+    <button onClick={() => state && setState && setState(!state)}
+      type={type ?? null}
+      className='border bg-[#FF9B9B] border-black rounded-full w-48 my-2 mr-2 py-3'>{ text }</button>
+  )
+}
+
 
 export const RegisterButton = ({text, link, role }: RegisterOptions ) => {
   return (
@@ -36,7 +56,7 @@ export const LogoutButton = () => {
 export const ProfileButton = ({ children, role, id }: any) => {
 
   return (
-  <Link href={ role !== null || "USER" ? `/profile` : `/profile`}> 
+  <Link href={ role !== null || "USER" ? `/profile` : `/profile`}>
     {children}
   </Link>
   )

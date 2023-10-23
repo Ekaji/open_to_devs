@@ -6,7 +6,7 @@ import { ChangeEvent, useState } from "react";
 export const EmployerRegisterationForm = () => {
   let [loading, setLoading] = useState(false);
   let [formValues, setFormValues] = useState({
-    name: "",
+    company_name: '',
     email: "",
     password: "",
   });
@@ -16,7 +16,7 @@ export const EmployerRegisterationForm = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/register/employer", {
+      const res = await fetch("/api/register/employer/CREATE", {
         method: "POST",
         body: JSON.stringify(formValues),
         headers: {
@@ -30,7 +30,7 @@ export const EmployerRegisterationForm = () => {
         return;
       }
 
-      signIn(undefined, { callbackUrl: "/profile" });
+      signIn(undefined, { callbackUrl: "/employer/onboarding/screen1" });
     } catch (error: any) {
       setLoading(false);
       console.error(error);
@@ -53,15 +53,16 @@ export const EmployerRegisterationForm = () => {
         rowGap: 10,
       }}
     >
-      <label htmlFor="name">Name</label>
+      <label htmlFor="name">company name</label>
       <input
         required
         type="text"
-        name="name"
-        value={formValues.name}
+        name="company_name"
+        value={formValues.company_name}
         onChange={handleChange}
         style={{ padding: "1rem" }}
       />
+
       <label htmlFor="email">Email</label>
       <input
         required
